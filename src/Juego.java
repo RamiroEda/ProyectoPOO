@@ -99,15 +99,19 @@ public class Juego extends JPanel
         Log.i("KEY_PRESS", e.getExtendedKeyCode());
         switch(e.getExtendedKeyCode()){
             case KEY_ARRIBA:
+                this.lastDirection = KEY_ARRIBA;
                 Log.d("DIRECCION", "Arriba");
                 break;
             case KEY_ABAJO:
+                this.lastDirection = KEY_ABAJO;
                 Log.d("DIRECCION", "Abajo");
                 break;
             case KEY_IZQUIERDA:
+                this.lastDirection = KEY_IZQUIERDA;
                 Log.d("DIRECCION", "Izquierda");
                 break;
             case KEY_DERECHA:
+                this.lastDirection = KEY_DERECHA;
                 Log.d("DIRECCION", "Derecha");
                 break;
         }

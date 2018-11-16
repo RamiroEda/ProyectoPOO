@@ -19,15 +19,27 @@
  * @author Ramiro Estrada García
  */
 public enum Dificultad{
-    FACIL(1),MEDIO(2),DIFICIL(4);
+    FACIL(1, 8 ,8),MEDIO(2, 16, 16),DIFICIL(4, 24, 24);
 
-    private int velocidad;
+    private final int velocidad;
+    private final int columnas;
+    private final int filas;
 
-    Dificultad(int vel){
+    Dificultad(int vel, int cols, int filas){
         this.velocidad = vel;
+        this.columnas = cols;
+        this.filas = filas;
     }
     
     public int getVelocidad(){
         return velocidad;
+    }
+
+    public int getColumnas() {
+        return columnas;
+    }
+
+    public int getFilas() {
+        return filas;
     }
 }

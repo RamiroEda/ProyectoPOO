@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
+import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -47,11 +48,12 @@ public class Juego extends JPanel
     
     private Timer timer; //El timer actualiza el juego cada SEGUNDO/FRAMERATE
     
-    private char lastDirection; //Aqui se guarda la ultima tecla presionada
+    private int lastDirection; //Aqui se guarda la ultima tecla presionada
     
     Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
+        this.dificultad = Dificultad.DIFICIL;
     }
     
     
@@ -70,10 +72,23 @@ public class Juego extends JPanel
     @Override
     public void paint(Graphics g){ //Aqui se reflejan los cambios del juego ya que aqui se dibujan los elementos
         super.paint(g);
+        int width = getWidth();
+        int height = getHeight();
+
+        int gridWidth = width/dificultad.getColumnas();
+        int gridHeight = height/dificultad.getFilas();
+
         g.setFont(new Font("Sans", Font.PLAIN, 20));
         g.drawString("FPS:"+format.format(this.promedioFrameRate),0,20);
         
         // TODO: Despues de aqui se dibujaran los elementos del juego
+        for(int i = 0; i < dificultad.getFilas() ; ++i){
+            g.drawLine(0, i*gridHeight, width, i*gridHeight);
+            for(int e = 0 ; e < dificultad.getColumnas() ; ++e){
+                g.drawLine(e*gridWidth, 0,
+                        e*gridWidth, height);
+            }
+        }
     }
 
     @Override
@@ -106,6 +121,7 @@ public class Juego extends JPanel
                 this.lastDirection = KEY_ABAJO;
                 Log.d("DIRECCION", "Abajo");
                 break;
+
             case KEY_IZQUIERDA:
                 this.lastDirection = KEY_IZQUIERDA;
                 Log.d("DIRECCION", "Izquierda");

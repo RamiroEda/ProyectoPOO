@@ -13,13 +13,13 @@ public class Manzanas {
     private int getX(){
         Random rand = new Random(System.currentTimeMillis());
         Dificultad dif = juego.getDificultad();
-        X= (int) (Math.random()* dif.getColumnas())+1;
+        X= (int) (Math.random()* dif.getColumnas());
         return X;
     }
     private int getY(){
         Random rand = new Random(System.currentTimeMillis());
         Dificultad dif = juego.getDificultad();
-        Y= (int) (Math.random()* dif.getColumnas())+1;
+        Y= (int) (Math.random()* dif.getColumnas());
         return Y;
     }
     private void setXY(){
@@ -31,6 +31,10 @@ public class Manzanas {
     public void Imagen(Graphics g){
 
         ImageIcon Img = new ImageIcon(getClass().getResource("manzanota.png"));
-        g.drawImage(Img.getImage(), (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),(((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) , 30, 30, null);
+        g.drawImage(Img.getImage(), (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),(((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) , 40, 40, null);
+        //Log.d("x", (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X));
+        //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
+        //Log.d("X", X);
+        //Log.d("Y", Y);
     }
 }

@@ -50,6 +50,8 @@ public class Juego extends JPanel
 
     private int lastDirection; //Aqui se guarda la ultima tecla presionada
 
+    private
+
     Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;

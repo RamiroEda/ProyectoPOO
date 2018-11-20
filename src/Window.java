@@ -21,6 +21,7 @@ import java.awt.*;
 public class Window extends JFrame{
     private static final int INIT_WIDTH = 1280,
                         INIT_HEIGHT = 720;
+
     private Juego juego;
     private JPanel mainPane;
     private JPanel gamePane;
@@ -43,7 +44,7 @@ public class Window extends JFrame{
 
     private void initLayout(){
         this.setContentPane(mainPane);
-        gamePane.add(juego);
+        gamePane.setLayout(new BoxLayout(juego, BoxLayout.PAGE_AXIS));
         this.addKeyListener(juego);
     }
 

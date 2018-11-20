@@ -55,6 +55,7 @@ public class Juego extends JPanel
     Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
+        this.manzana = new Manzanas(this);
     }
 
 
@@ -103,7 +104,7 @@ public class Juego extends JPanel
         frameRate();
         if(frameRateCalls >= 60){
             if(manzana == null){
-                manzana = new Manzanas();
+                manzana = new Manzanas(this);
             }
             this.repaint();
         }

@@ -20,7 +20,7 @@ import java.awt.*;
 
 public class Window extends JFrame{
     private static final int INIT_WIDTH = 1280,
-                        INIT_HEIGHT = 720;
+            INIT_HEIGHT = 720;
 
     private Juego juego;
     private JPanel mainPane;
@@ -43,8 +43,9 @@ public class Window extends JFrame{
     }
 
     private void initLayout(){
-        this.setContentPane(mainPane);
-        gamePane.setLayout(new BoxLayout(juego, BoxLayout.PAGE_AXIS));
+        this.setContentPane(juego);
+        //gamePane.setLayout(null);
+        //gamePane.add(juego);
         this.addKeyListener(juego);
     }
 
@@ -52,6 +53,8 @@ public class Window extends JFrame{
     public void paint(Graphics g) {
         int h = this.gamePane.getHeight();
         int w = this.gamePane.getWidth();
+
+
 
         int gameSize = Math.min(h,w);
         double aspectRatio = juego.getDificultad().getAspectRatio();

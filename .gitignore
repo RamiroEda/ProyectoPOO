@@ -1,2 +1,6 @@
 /nbproject/private/
 /build/
+/out/
+.idea/workspace.xml
+.idea/workspace.xml
+*.xml

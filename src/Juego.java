@@ -27,14 +27,14 @@ import javax.swing.Timer;
  */
 
 public class Juego extends JPanel
-                    implements ActionListener, KeyListener{
+        implements ActionListener, KeyListener{
 
     private static final int FRAME_RATE = 60; //Frame-rate
 
     public static final int KEY_ARRIBA    = 38, //KeyCodes de las teclas de direcciones
-                            KEY_IZQUIERDA = 37,
-                            KEY_ABAJO     = 40,
-                            KEY_DERECHA   = 39;
+            KEY_IZQUIERDA = 37,
+            KEY_ABAJO     = 40,
+            KEY_DERECHA   = 39;
 
     private long lastFrameRateUpdate = 0;
     private int frameRateCalls = 0;
@@ -50,7 +50,9 @@ public class Juego extends JPanel
 
     private int lastDirection; //Aqui se guarda la ultima tecla presionada
 
-    public Juego(){
+    private Manzanas manzana;
+
+    Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
         this.dificultad = Dificultad.DIFICIL;
@@ -89,6 +91,8 @@ public class Juego extends JPanel
                         e*gridWidth, height);
             }
         }
+
+        this.manzana.Imagen(g);
     }
 
     public Dificultad getDificultad() {
@@ -97,8 +101,13 @@ public class Juego extends JPanel
 
     @Override
     public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
-       frameRate();
-       this.repaint();
+        frameRate();
+        if(frameRateCalls >= 60){
+            if(manzana == null){
+                manzana = new Manzanas();
+            }
+            this.repaint();
+        }
     }
 
     private void frameRate(){

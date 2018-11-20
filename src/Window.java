@@ -27,6 +27,9 @@ public class Window extends JFrame{
     private JPanel gamePane;
     private JPanel scorePane;
     private JLabel scoreLabel;
+    private JButton facilButton;
+    private JButton medioButton;
+    private JButton dificilButton;
 
     public Window(Juego juego){
         this.juego = juego;
@@ -43,10 +46,26 @@ public class Window extends JFrame{
     }
 
     private void initLayout(){
-        this.setContentPane(juego);
-        //gamePane.setLayout(null);
-        //gamePane.add(juego);
+        this.setContentPane(mainPane);
+        gamePane.setLayout(new BoxLayout(gamePane, BoxLayout.PAGE_AXIS));
+        gamePane.add(juego);
         this.addKeyListener(juego);
+
+        facilButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.FACIL);
+        });
+
+        medioButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.MEDIO);
+        });
+
+        dificilButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.DIFICIL);
+        });
+    }
+
+    public Dimension getGameSize(){
+        return this.gamePane.getSize();
     }
 
     @Override
@@ -54,15 +73,10 @@ public class Window extends JFrame{
         int h = this.gamePane.getHeight();
         int w = this.gamePane.getWidth();
 
-
-
         int gameSize = Math.min(h,w);
         double aspectRatio = juego.getDificultad().getAspectRatio();
 
         this.gamePane.setSize(gameSize, gameSize);
-        this.gamePane.setBackground(Color.red);
-
-        this.scorePane.setBackground(Color.blue);
         super.paint(g);
     }
 }

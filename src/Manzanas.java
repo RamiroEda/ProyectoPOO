@@ -28,10 +28,15 @@ public class Manzanas {
 
     }
 
-    public void Imagen(Graphics g){
+    public void Imagen(Graphics g, int gridWidth, int gridHeight){
 
         ImageIcon Img = new ImageIcon(getClass().getResource("manzanota.png"));
-        g.drawImage(Img.getImage(), (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),(((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) , 40, 40, null);
+        g.drawImage(Img.getImage(),
+                (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),
+                (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) ,
+                gridWidth,
+                gridHeight,
+                null);
         //Log.d("x", (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X));
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
         //Log.d("X", X);

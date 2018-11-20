@@ -113,7 +113,7 @@ public class Juego extends JPanel
     }
 
     @Override
-    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO */ }
+    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO AAAUUUUN*/ }
 
     @Override
     public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas

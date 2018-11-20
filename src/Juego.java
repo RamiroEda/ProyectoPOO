@@ -55,7 +55,6 @@ public class Juego extends JPanel
     Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
-        this.dificultad = Dificultad.DIFICIL;
     }
 
 

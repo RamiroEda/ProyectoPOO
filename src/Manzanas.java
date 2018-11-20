@@ -3,9 +3,10 @@ import java.awt.*;
 import java.util.Random;
 
 public class Manzanas {
-    Juego juego = new Juego();
+    Juego juego;
     public int X,Y;
     public Manzanas(){
+        juego = new Juego();
         setXY();
     }
 

@@ -42,4 +42,8 @@ public enum Dificultad{
     public int getFilas() {
         return filas;
     }
+
+    public double getAspectRatio(){
+        return columnas/filas;
+    }
 }

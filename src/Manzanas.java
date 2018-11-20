@@ -28,7 +28,8 @@ public class Manzanas {
     }
 
     public void Imagen(Graphics g){
+
         ImageIcon Img = new ImageIcon(getClass().getResource("manzanota.png"));
-        g.drawImage(Img.getImage(), X, Y, 30, 30, null);
+        g.drawImage(Img.getImage(), (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),(((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) , 30, 30, null);
     }
 }

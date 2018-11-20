@@ -144,6 +144,7 @@ public class Juego extends JPanel
                 Log.d("DIRECCION", "Derecha");
                 break;
         }
+        this.manzana = null;
     }
 
     @Override

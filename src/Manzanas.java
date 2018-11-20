@@ -29,6 +29,6 @@ public class Manzanas {
 
     public void Imagen(Graphics g){
         ImageIcon Img = new ImageIcon(getClass().getResource("manzanota.png"));
-        g.drawImage(Img.getImage(), getX(), getY(), 30, 30, null);
+        g.drawImage(Img.getImage(), X, Y, 30, 30, null);
     }
 }

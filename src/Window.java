@@ -51,16 +51,23 @@ public class Window extends JFrame{
         gamePane.add(juego);
         this.addKeyListener(juego);
 
+        facilButton.setFocusable(false);
+        medioButton.setFocusable(false);
+        dificilButton.setFocusable(false);
+
         facilButton.addActionListener(e -> {
             juego.setDificultad(Dificultad.FACIL);
+            repaint();
         });
 
         medioButton.addActionListener(e -> {
             juego.setDificultad(Dificultad.MEDIO);
+            repaint();
         });
 
         dificilButton.addActionListener(e -> {
             juego.setDificultad(Dificultad.DIFICIL);
+            repaint();
         });
     }
 
@@ -75,8 +82,9 @@ public class Window extends JFrame{
 
         int gameSize = Math.min(h,w);
         double aspectRatio = juego.getDificultad().getAspectRatio();
+        Log.d("ASPECT_RATIO",aspectRatio);
 
-        this.gamePane.setSize(gameSize, gameSize);
+        this.gamePane.setSize((int)(gameSize*aspectRatio),gameSize);
         super.paint(g);
     }
 }

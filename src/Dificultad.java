@@ -19,7 +19,7 @@
  * @author Ramiro Estrada García
  */
 public enum Dificultad{
-    FACIL(1, 8 ,8),MEDIO(2, 16, 16),DIFICIL(4, 24, 24);
+    FACIL(1, 12 ,8),MEDIO(2, 24, 16),DIFICIL(4, 36, 24);
 
     private final int velocidad;
     private final int columnas;
@@ -44,6 +44,6 @@ public enum Dificultad{
     }
 
     public double getAspectRatio(){
-        return columnas/filas;
+        return columnas/(double)filas;
     }
 }

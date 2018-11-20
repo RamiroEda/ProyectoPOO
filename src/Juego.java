@@ -27,7 +27,7 @@ import javax.swing.Timer;
 public class Juego extends JPanel
         implements ActionListener, KeyListener{
 
-    private Dificultad dificultad = Dificultad.MEDIO; //Dificultad del juego; en Facil por defecto
+    private Dificultad dificultad = Dificultad.DIFICIL; //Dificultad del juego; en Facil por defecto
 
     private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
 
@@ -61,9 +61,22 @@ public class Juego extends JPanel
     }
 
     public void start(){ //Se prepara el juego
-        int delay = (1000/FRAME_RATE);
+        int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
+
+        timer.start();
+    }
+
+    public void resume(){
+        timer.start();
+    }
+
+    public void restart(){
+        stop();
+
+        int delay = (1000/dificultad.getVelocidad());
+        timer = new Timer(delay , this);
 
         timer.start();
     }
@@ -108,6 +121,7 @@ public class Juego extends JPanel
     public void setDificultad(Dificultad dificultad) {
         this.dificultad = dificultad;
         resetManzana();
+        restart();
         this.repaint();
     }
 
@@ -133,7 +147,6 @@ public class Juego extends JPanel
             this.frameRateCalls = 0;
         }
 
-        Log.d("UPDATE", (frameRateCalls+10)+" "+format.format(promedioFrameRate/dificultad.getVelocidad()));
         this.repaint();
     }
 

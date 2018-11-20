@@ -19,7 +19,7 @@ public class Manzanas {
     private int getY(){
         Random rand = new Random(System.currentTimeMillis());
         Dificultad dif = juego.getDificultad();
-        Y= (int) (Math.random()* dif.getColumnas());
+        Y= (int) (Math.random()* dif.getFilas());
         return Y;
     }
     private void setXY(){
@@ -39,7 +39,7 @@ public class Manzanas {
                 null);
         //Log.d("x", (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X));
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
-        //Log.d("X", X);
-        //Log.d("Y", Y);
+        Log.d("X", X);
+        Log.d("Y", Y);
     }
 }

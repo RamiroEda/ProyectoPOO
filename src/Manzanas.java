@@ -4,7 +4,7 @@ public class Manzanas {
     Juego juego = new Juego();
     public int X,Y;
     public Manzanas(){
-
+        setXY();
     }
 
     private int getX(){
@@ -19,9 +19,10 @@ public class Manzanas {
         Y= (int) (Math.random()* dif.getColumnas())+1;
         return Y;
     }
-    private setXY(int x, int y){
-        this.X=x;
-        this.Y=y;
+    private void setXY(){
+        getX();
+        getY();
+
     }
 
 }

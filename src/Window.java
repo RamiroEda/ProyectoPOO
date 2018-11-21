@@ -1,5 +1,6 @@
 
 import javax.swing.*;
+import java.awt.*;
 
 /*
  * Copyright 2018 Ramiro Estrada García.
@@ -18,26 +19,72 @@ import javax.swing.*;
  */
 
 public class Window extends JFrame{
-    private static final int INIT_WIDTH = 680,
-                        INIT_HEIGHT = 680;
+    private static final int INIT_WIDTH = 1280,
+            INIT_HEIGHT = 720;
+
     private Juego juego;
-    
+    private JPanel mainPane;
+    private JPanel gamePane;
+    private JPanel scorePane;
+    private JLabel scoreLabel;
+    private JButton facilButton;
+    private JButton medioButton;
+    private JButton dificilButton;
+
     public Window(Juego juego){
         this.juego = juego;
         initWindow();
         initLayout();
     }
-    
+
     private void initWindow(){
         this.setSize(INIT_WIDTH, INIT_HEIGHT);
         this.setLocationRelativeTo(null);
-        
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }
-    
+
     private void initLayout(){
-        this.setContentPane(juego);
+        this.setContentPane(mainPane);
+        gamePane.setLayout(new BoxLayout(gamePane, BoxLayout.PAGE_AXIS));
+        gamePane.add(juego);
         this.addKeyListener(juego);
+
+        facilButton.setFocusable(false);
+        medioButton.setFocusable(false);
+        dificilButton.setFocusable(false);
+
+        facilButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.FACIL);
+            repaint();
+        });
+
+        medioButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.MEDIO);
+            repaint();
+        });
+
+        dificilButton.addActionListener(e -> {
+            juego.setDificultad(Dificultad.DIFICIL);
+            repaint();
+        });
+    }
+
+    public Dimension getGameSize(){
+        return this.gamePane.getSize();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        int h = this.gamePane.getHeight();
+        int w = this.gamePane.getWidth();
+
+        int gameSize = Math.min(h,w);
+        double aspectRatio = juego.getDificultad().getAspectRatio();
+        Log.d("ASPECT_RATIO",aspectRatio);
+
+        this.gamePane.setSize((int)(gameSize*aspectRatio),gameSize);
+        super.paint(g);
     }
 }

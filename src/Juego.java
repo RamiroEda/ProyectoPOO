@@ -1,12 +1,10 @@
 
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
-import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -27,51 +25,68 @@ import javax.swing.Timer;
  */
 
 public class Juego extends JPanel
-                    implements ActionListener, KeyListener{
-    
-    private static final int FRAME_RATE = 60; //Frame-rate
-    
+        implements ActionListener, KeyListener{
+
+    private Dificultad dificultad = Dificultad.DIFICIL; //Dificultad del juego; en Facil por defecto
+
+    private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
+
     public static final int KEY_ARRIBA    = 38, //KeyCodes de las teclas de direcciones
-                            KEY_IZQUIERDA = 37,
-                            KEY_ABAJO     = 40,
-                            KEY_DERECHA   = 39;
-    
-    private long lastFrameRateUpdate = 0;
+            KEY_IZQUIERDA = 37,
+            KEY_ABAJO     = 40,
+            KEY_DERECHA   = 39;
+
+    private long lastFrameRateUpdate = 60;
     private int frameRateCalls = 0;
     private Double promedioFrameRate;
     private DecimalFormat format;
-            
-    
-    private Dificultad dificultad = Dificultad.FACIL; //Dificultad del juego; en Facil por defecto
-    
+
     private Window window; //La ventana que abre el juego
-    
+
     private Timer timer; //El timer actualiza el juego cada SEGUNDO/FRAMERATE
-    
+
     private int lastDirection; //Aqui se guarda la ultima tecla presionada
-    
+
+    private Manzanas manzana;
+
     Juego(){
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
-        this.dificultad = Dificultad.DIFICIL;
+        resetManzana();
     }
-    
-    
+
+
     public void stop(){ //Lo que se hace cuando el juego se PAUSA/DETIENE
         timer.stop();
     }
-    
+
     public void start(){ //Se prepara el juego
-        int delay = (1000/FRAME_RATE)-1;
+        int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
-        
+
         timer.start();
     }
-    
+
+    public void resume(){
+        timer.start();
+    }
+
+    public void restart(){
+        stop();
+
+        int delay = (1000/dificultad.getVelocidad());
+        timer = new Timer(delay , this);
+
+        timer.start();
+    }
+
     @Override
     public void paint(Graphics g){ //Aqui se reflejan los cambios del juego ya que aqui se dibujan los elementos
         super.paint(g);
+
+        this.setSize(window.getGameSize());
+
         int width = getWidth();
         int height = getHeight();
 
@@ -80,34 +95,63 @@ public class Juego extends JPanel
 
         g.setFont(new Font("Sans", Font.PLAIN, 20));
         g.drawString("FPS:"+format.format(this.promedioFrameRate),0,20);
-        
+
         // TODO: Despues de aqui se dibujaran los elementos del juego
-        for(int i = 0; i < dificultad.getFilas() ; ++i){
-            g.drawLine(0, i*gridHeight, width, i*gridHeight);
-            for(int e = 0 ; e < dificultad.getColumnas() ; ++e){
+        drawGrid(g, gridWidth, gridHeight);
+
+        this.manzana.Imagen(g, gridWidth, gridHeight);
+    }
+
+    private void drawGrid(Graphics g, int gridWidth, int gridHeight){
+        g.setColor(Color.LIGHT_GRAY);
+        for(int i = 0; i <= dificultad.getFilas() ; ++i){
+            g.drawLine(0, i*gridHeight, gridWidth*dificultad.getColumnas(), i*gridHeight);
+            for(int e = 0 ; e <= dificultad.getColumnas() ; ++e){
                 g.drawLine(e*gridWidth, 0,
-                        e*gridWidth, height);
+                        e*gridWidth, gridHeight*dificultad.getFilas());
             }
         }
+        g.setColor(Color.black);
+    }
+
+    public Dificultad getDificultad() {
+        return dificultad;
+    }
+
+    public void setDificultad(Dificultad dificultad) {
+        this.dificultad = dificultad;
+        resetManzana();
+        restart();
+        this.repaint();
+    }
+
+    private void resetManzana(){
+        this.manzana = new Manzanas(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
-       frameRate();
-       this.repaint();
+        try{
+            frameUpdate();
+        }catch (Exception error){
+            Log.e("ERROR_UPDATE", error.toString());
+        }
     }
-    
-    private void frameRate(){
+
+    private void frameUpdate(){
         this.frameRateCalls++;
+
         if(System.currentTimeMillis() - this.lastFrameRateUpdate > 1000){
             this.lastFrameRateUpdate = System.currentTimeMillis();
             this.promedioFrameRate = (this.promedioFrameRate + this.frameRateCalls)/2.0;
             this.frameRateCalls = 0;
         }
+
+        this.repaint();
     }
 
     @Override
-    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO */ }
+    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO AAAUUUUN*/ }
 
     @Override
     public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas
@@ -131,11 +175,12 @@ public class Juego extends JPanel
                 Log.d("DIRECCION", "Derecha");
                 break;
         }
+        resetManzana();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
+
     }
-    
+
 }

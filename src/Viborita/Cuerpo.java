@@ -61,6 +61,11 @@ public class Cuerpo {
     public void setViboritaY(int du){
         y[0]=du;
     }
-    
+    public int getJoints(){
+        return Joints;
+    }
+    public void setJoints(int j){
+        Joints=j;
+    }
     
 }

@@ -15,10 +15,35 @@
  */
 package Viborita;
 
+import Dificultad;
+
 /**
  *
  * @author psdh
  */
 public class Viborita {
-    
+void inicio(){
+    Viborita.setJoints(4);
+    for(int i=0;i<Viborita.setJoints();i++){
+        Viborita.setViboritaX(//ancho del borde/2);
+        Viborita.setViboritaY(//altura del borde/2);
+    }
+    Viborita.setMoverRight(true);
+    //manzanita.creaciondelamanzanita();
+    timer=new Timer(Dificultad,this);
+    timer.empezar();
 }
+void comerManzanitas(){
+    if((Viborita.getViborita(0),/*manzanita.getManzanita()*/,30)&&(Viborita.getViborita(0),/*manzanita.getManzanita()*/,30)){
+    System.out.println("");
+    Viborita.setJoints(Viborita.getJoints()+1);
+    //manzanita.crearManzanita();
+}
+}
+void checkCollisions(){
+    for(int i=Viborita.getJoints();i>0;i--){
+        if((i>5)&&(Viborita.getViboritaX(0)==Viborita.getVIboritaX(i)&&(Viborita.getViboritaY(0)==Viborita.getViborita(i)))
+    }
+}
+}
+

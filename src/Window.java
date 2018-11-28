@@ -71,6 +71,10 @@ public class Window extends JFrame{
         });
     }
 
+    public void updateScore(Integer score){
+        this.scoreLabel.setText(score.toString());
+    }
+
     public Dimension getGameSize(){
         return this.gamePane.getSize();
     }

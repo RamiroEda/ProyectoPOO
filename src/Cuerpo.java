@@ -61,9 +61,9 @@ public class Cuerpo {
     public int X,Y;
     private Cuerpo sigcuerpo;
     private Juego juego;
-    public void Imagen(Graphics g, int gridWidth, int gridHeight){
+    public void Imagen(Graphics g, int gridWidth, int gridHeight,String... img){
 
-        ImageIcon Img = new ImageIcon(getClass().getResource("cabeza.png"));
+        ImageIcon Img = new ImageIcon(getClass().getResource(img.length==0?"cuerpo.png":"cabeza.png"));
         g.drawImage(Img.getImage(),
                 (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),
                 (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) ,

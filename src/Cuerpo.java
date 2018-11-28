@@ -56,7 +56,7 @@ public class Cuerpo {
     private Juego juego;
     public void Imagen(Graphics g, int gridWidth, int gridHeight){
 
-        ImageIcon Img = new ImageIcon(getClass().getResource(""));
+        ImageIcon Img = new ImageIcon(getClass().getResource("cabeza.png"));
         g.drawImage(Img.getImage(),
                 (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),
                 (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) ,

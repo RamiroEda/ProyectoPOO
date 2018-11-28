@@ -28,7 +28,7 @@ import javax.swing.Timer;
 public class Juego extends JPanel
         implements ActionListener, KeyListener{
 
-    private Dificultad dificultad = Dificultad.DIFICIL; //Dificultad del juego; en Facil por defecto
+    private Dificultad dificultad = Dificultad.MEDIO; //Dificultad del juego; en Facil por defecto
 
     private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
 
@@ -46,9 +46,9 @@ public class Juego extends JPanel
 
     private Timer timer; //El timer actualiza el juego cada SEGUNDO/FRAMERATE
 
-    private int lastDirection; //Aqui se guarda la ultima tecla presionada
+    private int lastDirection = KEY_DERECHA; //Aqui se guarda la ultima tecla presionada
 
-   // private Viborita viborita;
+    private Viborita viborita;
 
     private Manzanas manzana;
 
@@ -67,7 +67,7 @@ public class Juego extends JPanel
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
-       // viborita = new Viborita();
+        viborita = new Viborita(this);
 
         timer.start();
     }
@@ -81,7 +81,7 @@ public class Juego extends JPanel
 
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
-       // viborita = new Viborita();
+        viborita = new Viborita(this);
 
         timer.start();
     }
@@ -105,6 +105,7 @@ public class Juego extends JPanel
         drawGrid(g, gridWidth, gridHeight);
 
         this.manzana.Imagen(g, gridWidth, gridHeight);
+        this.viborita.getcuerpo().Imagen(g, gridWidth, gridHeight);
     }
 
     private void drawGrid(Graphics g, int gridWidth, int gridHeight){
@@ -137,6 +138,7 @@ public class Juego extends JPanel
     @Override
     public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
         try{
+            this.viborita.mover(lastDirection);
             frameUpdate();
         }catch (Exception error){
             Log.e("ERROR_UPDATE", error.toString());
@@ -163,24 +165,31 @@ public class Juego extends JPanel
         Log.i("KEY_PRESS", e.getExtendedKeyCode());
         switch(e.getExtendedKeyCode()){
             case KEY_ARRIBA:
-                this.lastDirection = KEY_ARRIBA;
+                if(this.lastDirection != KEY_ABAJO){
+                    this.lastDirection = KEY_ARRIBA;
+                }
                 Log.d("DIRECCION", "Arriba");
                 break;
             case KEY_ABAJO:
-                this.lastDirection = KEY_ABAJO;
+                if(this.lastDirection != KEY_ARRIBA){
+                    this.lastDirection = KEY_ABAJO;
+                }
                 Log.d("DIRECCION", "Abajo");
                 break;
 
             case KEY_IZQUIERDA:
-                this.lastDirection = KEY_IZQUIERDA;
+                if(this.lastDirection != KEY_DERECHA){
+                    this.lastDirection = KEY_IZQUIERDA;
+                }
                 Log.d("DIRECCION", "Izquierda");
                 break;
             case KEY_DERECHA:
-                this.lastDirection = KEY_DERECHA;
+                if(this.lastDirection != KEY_IZQUIERDA){
+                    this.lastDirection = KEY_DERECHA;
+                }
                 Log.d("DIRECCION", "Derecha");
                 break;
         }
-        resetManzana();
     }
 
     @Override

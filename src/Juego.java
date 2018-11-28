@@ -34,6 +34,8 @@ public class Juego extends JPanel
 
     private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
 
+    private boolean canMove = true;
+
     public static final int KEY_ARRIBA    = 38, //KeyCodes de las teclas de direcciones
             KEY_IZQUIERDA = 37,
             KEY_ABAJO     = 40,
@@ -67,17 +69,20 @@ public class Juego extends JPanel
         timer.stop();
     }
 
+    public boolean isPlaying(){
+        return timer.isRunning();
+    }
+
     public void start(){ //Se prepara el juego
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
         restartViborita();
-
-        timer.start();
     }
 
     private void restartViborita(){
         viborita = new Viborita(this);
+        this.lastDirection = KEY_DERECHA;
 
         viborita.Listener(new OnViboritaComio() {
             @Override
@@ -91,6 +96,10 @@ public class Juego extends JPanel
 
     public void resume(){
         timer.start();
+    }
+
+    public void checkCruzar(){
+
     }
 
     public void restart(){
@@ -121,8 +130,16 @@ public class Juego extends JPanel
         // TODO: Despues de aqui se dibujaran los elementos del juego
         drawGrid(g, gridWidth, gridHeight);
 
+
         this.manzana.Imagen(g, gridWidth, gridHeight);
-        this.viborita.getcuerpo().Imagen(g, gridWidth, gridHeight);
+
+        Cuerpo cuerpo = this.viborita.getcuerpo();
+        cuerpo.Imagen(g, gridWidth, gridHeight); //
+        cuerpo = cuerpo.SigCuerpo(); //
+        do{
+            cuerpo.Imagen(g, gridWidth, gridHeight, "cabeza.png");
+            cuerpo = cuerpo.SigCuerpo();
+        }while(cuerpo != null);
     }
 
     private void drawGrid(Graphics g, int gridWidth, int gridHeight){
@@ -168,6 +185,7 @@ public class Juego extends JPanel
 
     private void frameUpdate(){
         this.frameRateCalls++;
+        canMove = true;
 
         if(System.currentTimeMillis() - this.lastFrameRateUpdate > 1000){
             this.lastFrameRateUpdate = System.currentTimeMillis();
@@ -184,32 +202,41 @@ public class Juego extends JPanel
     @Override
     public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas
         Log.i("KEY_PRESS", e.getExtendedKeyCode());
-        switch(e.getExtendedKeyCode()){
-            case KEY_ARRIBA:
-                if(this.lastDirection != KEY_ABAJO){
-                    this.lastDirection = KEY_ARRIBA;
-                }
-                Log.d("DIRECCION", "Arriba");
-                break;
-            case KEY_ABAJO:
-                if(this.lastDirection != KEY_ARRIBA){
-                    this.lastDirection = KEY_ABAJO;
-                }
-                Log.d("DIRECCION", "Abajo");
-                break;
+        if(!isPlaying()){
+            resume();
+        }
+        if(canMove){
+            switch(e.getExtendedKeyCode()){
+                case KEY_ARRIBA:
+                    if(this.lastDirection != KEY_ABAJO){
+                        this.lastDirection = KEY_ARRIBA;
+                        canMove = false;
+                    }
+                    Log.d("DIRECCION", "Arriba");
+                    break;
+                case KEY_ABAJO:
+                    if(this.lastDirection != KEY_ARRIBA){
+                        this.lastDirection = KEY_ABAJO;
+                        canMove = false;
+                    }
+                    Log.d("DIRECCION", "Abajo");
+                    break;
 
-            case KEY_IZQUIERDA:
-                if(this.lastDirection != KEY_DERECHA){
-                    this.lastDirection = KEY_IZQUIERDA;
-                }
-                Log.d("DIRECCION", "Izquierda");
-                break;
-            case KEY_DERECHA:
-                if(this.lastDirection != KEY_IZQUIERDA){
-                    this.lastDirection = KEY_DERECHA;
-                }
-                Log.d("DIRECCION", "Derecha");
-                break;
+                case KEY_IZQUIERDA:
+                    if(this.lastDirection != KEY_DERECHA){
+                        this.lastDirection = KEY_IZQUIERDA;
+                        canMove = false;
+                    }
+                    Log.d("DIRECCION", "Izquierda");
+                    break;
+                case KEY_DERECHA:
+                    if(this.lastDirection != KEY_IZQUIERDA){
+                        this.lastDirection = KEY_DERECHA;
+                        canMove = false;
+                    }
+                    Log.d("DIRECCION", "Derecha");
+                    break;
+            }
         }
     }
 

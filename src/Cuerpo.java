@@ -75,4 +75,7 @@ public class Cuerpo {
     public void addColita(Cuerpo cuerpo){
         this.sigcuerpo=cuerpo;
     }
+        public Cuerpo SigCuerpo(){
+        return sigcuerpo;
+    }
 }

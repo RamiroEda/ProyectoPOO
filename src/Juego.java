@@ -50,11 +50,13 @@ public class Juego extends JPanel
 
     private int lastDirection = KEY_DERECHA; //Aqui se guarda la ultima tecla presionada
 
+    private Scoreboard score;
     private Viborita viborita;
 
     private Manzanas manzana;
 
     Juego(){
+        this.score= new Scoreboard();
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
         resetManzana();
@@ -80,6 +82,7 @@ public class Juego extends JPanel
         viborita.Listener(new OnViboritaComio() {
             @Override
             public void ComioManzana() {
+                score.SumarPuntos();
                 resetManzana();
             }
         });

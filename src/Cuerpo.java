@@ -1,5 +1,6 @@
 
 import java.awt.Graphics;
+import javafx.util.Pair;
 import javax.swing.ImageIcon;
 
 /*
@@ -67,5 +68,8 @@ public class Cuerpo {
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
         Log.d("X", X);
         Log.d("Y", Y);
+    }
+    public Pair<Integer,Integer> getPosicion(){
+        return new Pair<Integer, Integer>(X,Y);
     }
 }

@@ -1,6 +1,7 @@
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /*
  * Copyright 2018 psdh.
@@ -24,18 +25,30 @@ import java.util.ArrayList;
  */
 public class Viborita {
     private Cuerpo cuerpo;
+    private Juego juego;
+    private OnViboritaComio listener;
     public Viborita(Juego juego){
       this.cuerpo= new Cuerpo(juego); 
+      this.juego=juego;
     }
     public void comer(){
     //    Cuerpo.add("");
-        
+        if(listener!=null){
+            listener.ComioManzana();
+        }
     }
     public void morir(){
         
     }
     public void mover(int direccion){
         cuerpo.moverse(direccion);
+        if(Objects.equals(juego.getManzanaPosition().getKey(), cuerpo.getPosicion().getKey()) &&
+           Objects.equals(juego.getManzanaPosition().getValue(), cuerpo.getPosicion().getValue())){
+            comer();
+        }
+    }
+    public void Listener(OnViboritaComio listener){
+       this.listener=listener;
     }
     public Cuerpo getcuerpo(){
         return cuerpo;

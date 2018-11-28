@@ -69,9 +69,20 @@ public class Juego extends JPanel
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
-        viborita = new Viborita(this);
+        restartViborita();
 
         timer.start();
+    }
+
+    private void restartViborita(){
+        viborita = new Viborita(this);
+
+        viborita.Listener(new OnViboritaComio() {
+            @Override
+            public void ComioManzana() {
+                resetManzana();
+            }
+        });
     }
 
     public void resume(){
@@ -83,7 +94,7 @@ public class Juego extends JPanel
 
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
-        viborita = new Viborita(this);
+        restartViborita();
 
         timer.start();
     }

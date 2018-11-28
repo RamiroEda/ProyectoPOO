@@ -22,7 +22,7 @@ public class Manzanas {
         Y= (int) (Math.random()* dif.getFilas());
         return Y;
     }
-    private void setXY(){
+    public void setXY(){
         getX();
         getY();
 
@@ -41,5 +41,15 @@ public class Manzanas {
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
         Log.d("X", X);
         Log.d("Y", Y);
+    }
+    
+    public boolean verificar(Cuerpo cuerpo){
+        do{
+            if(this.X==cuerpo.X && this.Y==cuerpo.Y){
+                return false;
+            }
+            cuerpo = cuerpo.SigCuerpo();
+        }while(cuerpo != null);
+        return true;
     }
 }

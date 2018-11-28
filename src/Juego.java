@@ -1,5 +1,4 @@
 
-import Viborita.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -49,7 +48,7 @@ public class Juego extends JPanel
 
     private int lastDirection; //Aqui se guarda la ultima tecla presionada
 
-    private Viborita1 viborita;
+   // private Viborita viborita;
 
     private Manzanas manzana;
 
@@ -68,7 +67,7 @@ public class Juego extends JPanel
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         window = new Window(this);
-        viborita = new Viborita1();
+       // viborita = new Viborita();
 
         timer.start();
     }
@@ -82,7 +81,7 @@ public class Juego extends JPanel
 
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
-        viborita = new Viborita1();
+       // viborita = new Viborita();
 
         timer.start();
     }

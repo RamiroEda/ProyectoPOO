@@ -72,4 +72,7 @@ public class Cuerpo {
     public Pair<Integer,Integer> getPosicion(){
         return new Pair<Integer, Integer>(X,Y);
     }
+    public void addColita(Cuerpo cuerpo){
+        this.sigcuerpo=cuerpo;
+    }
 }

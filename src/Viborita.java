@@ -26,16 +26,21 @@ import java.util.Objects;
 public class Viborita {
     private Cuerpo cuerpo;
     private Juego juego;
+    private Cuerpo colita;
     private OnViboritaComio listener;
     public Viborita(Juego juego){
       this.cuerpo= new Cuerpo(juego); 
       this.juego=juego;
+      this.colita=this.cuerpo;
     }
     public void comer(){
     //    Cuerpo.add("");
         if(listener!=null){
             listener.ComioManzana();
         }
+        Cuerpo cola= new Cuerpo(juego);
+        this.colita.addColita(cola);
+        this.colita=cola;
     }
     public void morir(){
         

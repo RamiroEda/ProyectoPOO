@@ -43,13 +43,18 @@ public class Viborita {
         this.colita=cola;
     }
     public void morir(){
-        
+       juego.restart();
+       juego.stop();
     }
     public void mover(int direccion){
         cuerpo.moverse(direccion);
         if(Objects.equals(juego.getManzanaPosition().getKey(), cuerpo.getPosicion().getKey()) &&
            Objects.equals(juego.getManzanaPosition().getValue(), cuerpo.getPosicion().getValue())){
             comer();
+        }
+        if(cuerpo.X<0||cuerpo.X>juego.getDificultad().getColumnas()||
+           cuerpo.Y<0||cuerpo.Y>juego.getDificultad().getFilas()){
+            morir();
         }
     }
     public void Listener(OnViboritaComio listener){

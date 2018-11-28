@@ -1,5 +1,7 @@
 
 
+import javafx.util.Pair;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -133,6 +135,10 @@ public class Juego extends JPanel
 
     private void resetManzana(){
         this.manzana = new Manzanas(this);
+    }
+
+    public Pair<Integer, Integer> getManzanaPosition(){
+        return new Pair<Integer, Integer>(manzana.X, manzana.Y);
     }
 
     @Override

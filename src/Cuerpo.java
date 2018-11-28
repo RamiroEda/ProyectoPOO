@@ -27,6 +27,12 @@ public class Cuerpo {
     public Cuerpo(Juego juego){
         this.juego=juego;
     }
+    public Cuerpo(Juego juego,int X,  int Y){
+        this.juego=juego;
+        this.X=X;
+        this.Y=Y;
+        
+    }
     public void moverse(int direccion){
         switch(direccion){
             case Juego.KEY_ARRIBA:
@@ -52,7 +58,7 @@ public class Cuerpo {
         }
     }
     private int Oldir;
-    private int X,Y;
+    public int X,Y;
     private Cuerpo sigcuerpo;
     private Juego juego;
     public void Imagen(Graphics g, int gridWidth, int gridHeight){

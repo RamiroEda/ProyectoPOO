@@ -38,7 +38,7 @@ public class Viborita {
         if(listener!=null){
             listener.ComioManzana();
         }
-        Cuerpo cola= new Cuerpo(juego);
+        Cuerpo cola= new Cuerpo(juego,colita.X,colita.Y);
         this.colita.addColita(cola);
         this.colita=cola;
     }

@@ -83,6 +83,7 @@ public class Juego extends JPanel
             @Override
             public void ComioManzana() {
                 score.SumarPuntos();
+                window.updateScore(score.puntaje);
                 resetManzana();
             }
         });
@@ -98,7 +99,7 @@ public class Juego extends JPanel
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         restartViborita();
-
+        score.ResetPuntos();
         timer.start();
     }
 

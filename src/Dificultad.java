@@ -19,16 +19,18 @@
  * @author Ramiro Estrada García
  */
 public enum Dificultad{
-    FACIL(4, 12 ,8),MEDIO(8, 24, 16),DIFICIL(16, 36, 24);
+    FACIL(4, 12 ,8, 1),MEDIO(8, 24, 16, 1),DIFICIL(16, 36, 24, 2), EXTREMA(30, 74, 48, 4);
 
     private final int velocidad;
     private final int columnas;
     private final int filas;
+    private final int numManzanas;
 
-    Dificultad(int vel, int cols, int filas){
+    Dificultad(int vel, int cols, int filas, int numManzanas){
         this.velocidad = vel;
         this.columnas = cols;
         this.filas = filas;
+        this.numManzanas = numManzanas;
     }
     
     public int getVelocidad(){
@@ -45,5 +47,9 @@ public enum Dificultad{
 
     public double getAspectRatio(){
         return columnas/(double)filas;
+    }
+
+    public int getNumManzanas() {
+        return numManzanas;
     }
 }

@@ -1,3 +1,3 @@
 public interface OnViboritaComio {
-    public void ComioManzana();
+    public void ComioManzana(Manzanas manzana);
 }

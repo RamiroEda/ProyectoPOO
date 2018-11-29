@@ -34,22 +34,19 @@ public class Cuerpo {
         
     }
     public void moverse(int direccion){
+        dir = direccion;
         switch(direccion){
-            case Juego.KEY_ARRIBA:
+            case Juego.DIR_ARRIBA:
                 Y--;
-                Log.d("DIRECCION", "Arriba");
                 break;
-            case Juego.KEY_ABAJO:
+            case Juego.DIR_ABAJO:
                 Y++;
-                Log.d("DIRECCION", "Abajo");
                 break;
-            case Juego.KEY_IZQUIERDA:
+            case Juego.DIR_IZQUIERDA:
                 X--;
-                Log.d("DIRECCION", "Izquierda");
                 break;
-            case Juego.KEY_DERECHA:
+            case Juego.DIR_DERECHA:
                 X++;
-                Log.d("DIRECCION", "Derecha");
                 break;
         }
         if (sigcuerpo!=null){
@@ -58,6 +55,7 @@ public class Cuerpo {
         }
     }
     private int Oldir;
+    private int dir;
     public int X,Y;
     private Cuerpo sigcuerpo;
     private Juego juego;
@@ -72,8 +70,8 @@ public class Cuerpo {
                 null);
         //Log.d("x", (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X));
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
-        Log.d("X", X);
-        Log.d("Y", Y);
+        //Log.d("X", X);
+        //Log.d("Y", Y);
     }
     public Pair<Integer,Integer> getPosicion(){
         return new Pair<Integer, Integer>(X,Y);
@@ -83,5 +81,9 @@ public class Cuerpo {
     }
         public Cuerpo SigCuerpo(){
         return sigcuerpo;
+    }
+
+    public int getDir() {
+        return dir;
     }
 }

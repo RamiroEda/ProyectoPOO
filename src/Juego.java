@@ -1,5 +1,8 @@
 
 
+import ch.aplu.xboxcontroller.XboxController;
+import ch.aplu.xboxcontroller.XboxControllerAdapter;
+import ch.aplu.xboxcontroller.XboxControllerListener;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -8,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -30,16 +35,34 @@ import javax.swing.Timer;
 public class Juego extends JPanel
         implements ActionListener, KeyListener{
 
-    private Dificultad dificultad = Dificultad.MEDIO; //Dificultad del juego; en Facil por defecto
+    private Dificultad dificultad = Dificultad.EXTREMA; //Dificultad del juego; en Facil por defecto
 
     private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
 
-    private boolean canMove = true;
+    //KeyCodes de las teclas de direcciones
 
-    public static final int KEY_ARRIBA    = 38, //KeyCodes de las teclas de direcciones
+    public static final int
+            KEY_ARRIBA    = 38,
             KEY_IZQUIERDA = 37,
             KEY_ABAJO     = 40,
             KEY_DERECHA   = 39;
+
+    public static final int
+            KEY_W = 87,
+            KEY_A = 65,
+            KEY_S = 83,
+            KEY_D = 68;
+
+    public static final int //Codigos estaticos de las direcciones
+            DIR_ARRIBA              = 0x01,
+            DIR_ABAJO               = 0x02,
+            DIR_DERECHA             = 0x03,
+            DIR_IZQUIERDA           = 0x04,
+            DIR_ABAJO_IZQUIERDA     = 0x05,
+            DIR_ABAJO_DERECHA       = 0x06,
+            DIR_ARRIBA_IZQUIERDA    = 0x07,
+            DIR_ARRIBA_DERECHA      = 0x08,
+            DIR_NULL                = 0x00;
 
     private long lastFrameRateUpdate = 60;
     private int frameRateCalls = 0;
@@ -53,15 +76,22 @@ public class Juego extends JPanel
     private int lastDirection = KEY_DERECHA; //Aqui se guarda la ultima tecla presionada
 
     private Scoreboard score;
+
     private Viborita viborita;
 
-    private Manzanas manzana;
+    private List<Manzanas> manzana;
+
+    private XboxController xboxController;
+    private XboxControllerAdapter xboxControllerAdapter;
 
     Juego(){
         this.score= new Scoreboard();
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
-        resetManzana();
+        this.manzana = new ArrayList<>();
+        this.xboxController = new XboxController();
+        this.xboxControllerAdapter = new XboxControllerDirecciones(this);
+        this.xboxController.addXboxControllerListener(this.xboxControllerAdapter);
     }
 
 
@@ -78,6 +108,20 @@ public class Juego extends JPanel
         timer = new Timer(delay , this);
         window = new Window(this);
         restartViborita();
+        resetManzana();
+    }
+
+    private boolean verificarViborita(){
+        Cuerpo cabeza = this.viborita.getcuerpo();
+        Cuerpo cuerpo = cabeza.SigCuerpo();
+        do{
+            if(cabeza.X == cuerpo.X && cabeza.Y==cuerpo.Y){
+                return false;
+            }
+            cuerpo = cuerpo.SigCuerpo();
+        }while(cuerpo != null);
+
+        return true;
     }
 
     private void restartViborita(){
@@ -86,12 +130,21 @@ public class Juego extends JPanel
 
         viborita.Listener(new OnViboritaComio() {
             @Override
-            public void ComioManzana() {
+            public void ComioManzana(Manzanas manzana) {
                 score.SumarPuntos();
                 window.updateScore(score.puntaje);
-                resetManzana();
+                comerManzana(manzana);
+                xboxController.vibrate(0x00FF, 0x00FF);
             }
         });
+    }
+
+    private void comerManzana(Manzanas manzana){
+        manzana.setXY();
+
+        while(!manzana.verificar(this.viborita.getcuerpo())){
+            manzana.setXY();
+        }
     }
 
     public void resume(){
@@ -108,6 +161,7 @@ public class Juego extends JPanel
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         restartViborita();
+        resetManzana();
         score.ResetPuntos();
         timer.start();
     }
@@ -125,13 +179,15 @@ public class Juego extends JPanel
         int gridHeight = height/dificultad.getFilas();
 
         g.setFont(new Font("Sans", Font.PLAIN, 20));
-        g.drawString("FPS:"+format.format(this.promedioFrameRate),0,20);
+        g.drawString("Velocidad: "+format.format(this.promedioFrameRate)+" u/s",0,20);
 
         // TODO: Despues de aqui se dibujaran los elementos del juego
         drawGrid(g, gridWidth, gridHeight);
 
 
-        this.manzana.Imagen(g, gridWidth, gridHeight);
+        for(Manzanas m : this.manzana){
+            m.Imagen(g, gridWidth, gridHeight);
+        }
 
         Cuerpo cuerpo = this.viborita.getcuerpo();
         cuerpo.Imagen(g, gridWidth, gridHeight); //
@@ -166,17 +222,35 @@ public class Juego extends JPanel
     }
 
     private void resetManzana(){
-        this.manzana = new Manzanas(this);
+        this.manzana.clear();
+
+        for(int i = 0 ; i < this.dificultad.getNumManzanas() ; i++){
+            Manzanas newManzana = new Manzanas(this);
+
+            while(!newManzana.verificar(this.viborita.getcuerpo())){
+                newManzana.setXY();
+            }
+
+            this.manzana.add(newManzana);
+        }
+
     }
 
-    public Pair<Integer, Integer> getManzanaPosition(){
-        return new Pair<Integer, Integer>(manzana.X, manzana.Y);
+    public List<Manzanas> getManzana() {
+        return manzana;
+    }
+
+    public int getLastDirection() {
+        return lastDirection;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
         try{
             this.viborita.mover(lastDirection);
+            if(!this.verificarViborita()){
+                this.viborita.morir();
+            }
             frameUpdate();
         }catch (Exception error){
             Log.e("ERROR_UPDATE", error.toString());
@@ -185,7 +259,6 @@ public class Juego extends JPanel
 
     private void frameUpdate(){
         this.frameRateCalls++;
-        canMove = true;
 
         if(System.currentTimeMillis() - this.lastFrameRateUpdate > 1000){
             this.lastFrameRateUpdate = System.currentTimeMillis();
@@ -202,42 +275,63 @@ public class Juego extends JPanel
     @Override
     public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas
         Log.i("KEY_PRESS", e.getExtendedKeyCode());
+
+        int keyCode = getDireccion(e.getExtendedKeyCode());
+
+        setLastDirection(keyCode, "TECLADO");
+    }
+
+    public void setLastDirection(int lastDirection, String origen) {
         if(!isPlaying()){
             resume();
         }
-        if(canMove){
-            switch(e.getExtendedKeyCode()){
-                case KEY_ARRIBA:
-                    if(this.lastDirection != KEY_ABAJO){
-                        this.lastDirection = KEY_ARRIBA;
-                        canMove = false;
-                    }
-                    Log.d("DIRECCION", "Arriba");
-                    break;
-                case KEY_ABAJO:
-                    if(this.lastDirection != KEY_ARRIBA){
-                        this.lastDirection = KEY_ABAJO;
-                        canMove = false;
-                    }
-                    Log.d("DIRECCION", "Abajo");
-                    break;
 
-                case KEY_IZQUIERDA:
-                    if(this.lastDirection != KEY_DERECHA){
-                        this.lastDirection = KEY_IZQUIERDA;
-                        canMove = false;
-                    }
-                    Log.d("DIRECCION", "Izquierda");
-                    break;
-                case KEY_DERECHA:
-                    if(this.lastDirection != KEY_IZQUIERDA){
-                        this.lastDirection = KEY_DERECHA;
-                        canMove = false;
-                    }
-                    Log.d("DIRECCION", "Derecha");
-                    break;
-            }
+        int dirActual = this.viborita.getcuerpo().getDir();
+
+        Log.d("ORIGEN", "---------------"+origen+"--------------");
+
+        switch(lastDirection){
+            case DIR_ARRIBA:
+                if(dirActual != DIR_ABAJO){
+                    this.lastDirection = DIR_ARRIBA;
+                }
+                Log.d("SET_DIRECCION", "Arriba");
+                break;
+            case DIR_ABAJO:
+                if(dirActual != DIR_ARRIBA){
+                    this.lastDirection = DIR_ABAJO;
+                }
+                Log.d("SET_DIRECCION", "Abajo");
+                break;
+
+            case DIR_IZQUIERDA:
+                if(dirActual != DIR_DERECHA){
+                    this.lastDirection = DIR_IZQUIERDA;
+                }
+                Log.d("SET_DIRECCION", "Izquierda");
+                break;
+            case DIR_DERECHA:
+                if(dirActual != DIR_IZQUIERDA){
+                    this.lastDirection = DIR_DERECHA;
+                }
+                Log.d("SET_DIRECCION", "Derecha");
+                break;
+
         }
+    }
+
+    private int getDireccion(int dir){
+        if(dir == KEY_ARRIBA || dir == KEY_W){
+            return DIR_ARRIBA;
+        }else if(dir == KEY_ABAJO || dir == KEY_S){
+            return DIR_ABAJO;
+        }else if(dir == KEY_DERECHA || dir == KEY_D){
+            return DIR_DERECHA;
+        }else if(dir == KEY_IZQUIERDA || dir == KEY_A){
+            return DIR_IZQUIERDA;
+        }
+
+        return DIR_NULL;
     }
 
     @Override

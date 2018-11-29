@@ -39,8 +39,8 @@ public class Manzanas {
                 null);
         //Log.d("x", (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X));
         //Log.d("y", (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y));
-        Log.d("X", X);
-        Log.d("Y", Y);
+        //Log.d("X", X);
+        //Log.d("Y", Y);
     }
     
     public boolean verificar(Cuerpo cuerpo){

@@ -34,15 +34,15 @@ public class Viborita {
       this.cuerpo.X=1;
       this.juego=juego;
       this.colita=this.cuerpo;
-      this.comer();
-      cuerpo.moverse(Juego.KEY_DERECHA);
-      this.comer();
-      cuerpo.moverse(Juego.KEY_DERECHA);
+      this.comer(null);
+      cuerpo.moverse(Juego.DIR_DERECHA);
+      this.comer(null);
+      cuerpo.moverse(Juego.DIR_DERECHA);
     }
-    public void comer(){
+    public void comer(Manzanas m){
     //    Cuerpo.add("");
         if(listener!=null){
-            listener.ComioManzana();
+            listener.ComioManzana(m);
         }
         Cuerpo cola= new Cuerpo(juego,colita.X,colita.Y);
         this.colita.addColita(cola);
@@ -54,9 +54,11 @@ public class Viborita {
     }
     public void mover(int direccion){
         cuerpo.moverse(direccion);
-        if(Objects.equals(juego.getManzanaPosition().getKey(), cuerpo.getPosicion().getKey()) &&
-           Objects.equals(juego.getManzanaPosition().getValue(), cuerpo.getPosicion().getValue())){
-            comer();
+        for(Manzanas m : juego.getManzana()){
+            if(Objects.equals(m.X, cuerpo.getPosicion().getKey()) &&
+                    Objects.equals(m.Y, cuerpo.getPosicion().getValue())){
+                comer(m);
+            }
         }
         if(cuerpo.X<0||cuerpo.X>=juego.getDificultad().getColumnas()||
            cuerpo.Y<0||cuerpo.Y>=juego.getDificultad().getFilas()){

@@ -19,7 +19,7 @@
  * @author Ramiro Estrada García
  */
 public enum Dificultad{
-    FACIL(4, 12 ,8, 1),MEDIO(8, 24, 16, 1),DIFICIL(16, 36, 24, 2), EXTREMA(30, 74, 48, 4);
+    FACIL(4, 12 ,8, 1),MEDIO(8, 24, 16, 1),DIFICIL(16, 36, 24, 1), EXTREMA(30, 74, 48, 4);
 
     private final int velocidad;
     private final int columnas;

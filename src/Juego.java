@@ -2,8 +2,6 @@
 
 import ch.aplu.xboxcontroller.XboxController;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
-import ch.aplu.xboxcontroller.XboxControllerListener;
-import javafx.util.Pair;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,8 +11,7 @@ import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 /*
  * Copyright 2018 Ramiro Estrada García.
@@ -35,7 +32,7 @@ import javax.swing.Timer;
 public class Juego extends JPanel
         implements ActionListener, KeyListener{
 
-    private Dificultad dificultad = Dificultad.EXTREMA; //Dificultad del juego; en Facil por defecto
+    private Dificultad dificultad = Dificultad.MEDIO; //Dificultad del juego; en Facil por defecto
 
     private int FRAME_RATE = this.dificultad.getVelocidad(); //Frame-rate
 
@@ -75,6 +72,8 @@ public class Juego extends JPanel
 
     private int lastDirection = KEY_DERECHA; //Aqui se guarda la ultima tecla presionada
 
+    private boolean isPlaying = false;
+
     private Scoreboard score;
 
     private Viborita viborita;
@@ -85,7 +84,8 @@ public class Juego extends JPanel
     private XboxControllerAdapter xboxControllerAdapter;
 
     Juego(){
-        this.score= new Scoreboard();
+        this.window = new Window(this);
+        this.score= new Scoreboard(this);
         this.format = new DecimalFormat("#.00");
         this.promedioFrameRate = FRAME_RATE/1.0;
         this.manzana = new ArrayList<>();
@@ -94,19 +94,22 @@ public class Juego extends JPanel
         this.xboxController.addXboxControllerListener(this.xboxControllerAdapter);
     }
 
+    public Window getWindow() {
+        return window;
+    }
 
     public void stop(){ //Lo que se hace cuando el juego se PAUSA/DETIENE
+        isPlaying = false;
         timer.stop();
     }
 
     public boolean isPlaying(){
-        return timer.isRunning();
+        return this.isPlaying;
     }
 
     public void start(){ //Se prepara el juego
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
-        window = new Window(this);
         restartViborita();
         resetManzana();
     }
@@ -140,6 +143,10 @@ public class Juego extends JPanel
     }
 
     private void comerManzana(Manzanas manzana){
+        if(this.score.puntaje == this.dificultad.getFilas() * this.dificultad.getColumnas()){
+            JOptionPane.showMessageDialog(null, "Has ganado!");
+        }
+
         manzana.setXY();
 
         while(!manzana.verificar(this.viborita.getcuerpo())){
@@ -148,11 +155,8 @@ public class Juego extends JPanel
     }
 
     public void resume(){
+        isPlaying = true;
         timer.start();
-    }
-
-    public void checkCruzar(){
-
     }
 
     public void restart(){
@@ -162,8 +166,12 @@ public class Juego extends JPanel
         timer = new Timer(delay , this);
         restartViborita();
         resetManzana();
-        score.ResetPuntos();
         timer.start();
+        isPlaying = true;
+    }
+
+    public Scoreboard getScore() {
+        return score;
     }
 
     @Override
@@ -190,24 +198,35 @@ public class Juego extends JPanel
         }
 
         Cuerpo cuerpo = this.viborita.getcuerpo();
-        cuerpo.Imagen(g, gridWidth, gridHeight); //
+        cuerpo.Imagen(g, gridWidth, gridHeight, true); //
         cuerpo = cuerpo.SigCuerpo(); //
         do{
-            cuerpo.Imagen(g, gridWidth, gridHeight, "cabeza.png");
+            cuerpo.Imagen(g, gridWidth, gridHeight, false);
             cuerpo = cuerpo.SigCuerpo();
         }while(cuerpo != null);
     }
 
     private void drawGrid(Graphics g, int gridWidth, int gridHeight){
-        g.setColor(Color.LIGHT_GRAY);
-        for(int i = 0; i <= dificultad.getFilas() ; ++i){
-            g.drawLine(0, i*gridHeight, gridWidth*dificultad.getColumnas(), i*gridHeight);
-            for(int e = 0 ; e <= dificultad.getColumnas() ; ++e){
-                g.drawLine(e*gridWidth, 0,
-                        e*gridWidth, gridHeight*dificultad.getFilas());
-            }
-        }
+        ImageIcon img = new ImageIcon(getClass().getResource("pastaso.jpg"));
+
+        int width = gridWidth*dificultad.getColumnas();
+        int height = gridHeight*dificultad.getFilas();
+
         g.setColor(Color.black);
+        for(int i = 0; i <= dificultad.getFilas() ; ++i){
+            for(int e = 0 ; e <= dificultad.getColumnas() ; ++e){
+                g.drawImage(img.getImage(),
+                        gridWidth*e,
+                        gridHeight*i ,
+                        gridWidth,
+                        gridHeight,
+                        null);
+                g.drawLine(e*gridWidth, 0,
+                        e*gridWidth, height);
+            }
+            g.drawLine(0, i*gridHeight, width, i*gridHeight);
+        }
+        //g.setColor(Color.black);
     }
 
     public Dificultad getDificultad() {
@@ -215,10 +234,11 @@ public class Juego extends JPanel
     }
 
     public void setDificultad(Dificultad dificultad) {
+        isPlaying = true;
         this.dificultad = dificultad;
-        resetManzana();
         restart();
         this.repaint();
+        isPlaying = false;
     }
 
     private void resetManzana(){
@@ -248,8 +268,9 @@ public class Juego extends JPanel
     public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
         try{
             this.viborita.mover(lastDirection);
+            Log.d("IS_RUNNING", isPlaying());
             if(!this.verificarViborita()){
-                this.viborita.morir();
+                this.viborita.morir(isPlaying);
             }
             frameUpdate();
         }catch (Exception error){

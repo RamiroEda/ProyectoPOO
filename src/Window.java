@@ -1,6 +1,10 @@
 
+import javafx.util.Pair;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Copyright 2018 Ramiro Estrada García.
@@ -30,6 +34,7 @@ public class Window extends JFrame{
     private JButton facilButton;
     private JButton medioButton;
     private JButton dificilButton;
+    private JList scoreList;
 
     public Window(Juego juego){
         this.juego = juego;
@@ -45,6 +50,14 @@ public class Window extends JFrame{
         this.setVisible(true);
     }
 
+    public void setScoreList(List<Pair<String, Integer>> highScore){
+        List<String> score = new ArrayList<>();
+        for (int i = 0 ; i < highScore.size() ; i++){
+            score.add((i+1)+" - "+highScore.get(i).getKey()+"      "+highScore.get(i).getValue()+" puntos");
+        }
+        this.scoreList.setListData(score.toArray());
+    }
+
     private void initLayout(){
         this.setContentPane(mainPane);
         gamePane.setLayout(new BoxLayout(gamePane, BoxLayout.PAGE_AXIS));
@@ -54,6 +67,7 @@ public class Window extends JFrame{
         facilButton.setFocusable(false);
         medioButton.setFocusable(false);
         dificilButton.setFocusable(false);
+        scoreList.setFocusable(false);
 
         facilButton.addActionListener(e -> {
             juego.setDificultad(Dificultad.FACIL);
@@ -72,7 +86,7 @@ public class Window extends JFrame{
     }
 
     public void updateScore(Integer score){
-        this.scoreLabel.setText(score.toString());
+        this.scoreLabel.setText("Puntaje: "+score.toString());
     }
 
     public Dimension getGameSize(){

@@ -1,4 +1,5 @@
 
+import javax.swing.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,9 +49,15 @@ public class Viborita {
         this.colita.addColita(cola);
         this.colita=cola;
     }
-    public void morir(){
+    public void morir(boolean escribirPuntuacion){
        juego.restart();
        juego.stop();
+       if(escribirPuntuacion){
+           String nombre = JOptionPane.showInputDialog("Puntuación: "+juego.getScore().puntaje+"\nEscribe tu nombre:");
+           if(nombre != null){
+               juego.getScore().ResetPuntos(nombre);
+           }
+       }
     }
     public void mover(int direccion){
         cuerpo.moverse(direccion);
@@ -62,7 +69,9 @@ public class Viborita {
         }
         if(cuerpo.X<0||cuerpo.X>=juego.getDificultad().getColumnas()||
            cuerpo.Y<0||cuerpo.Y>=juego.getDificultad().getFilas()){
-            morir();
+            if(juego.isPlaying()){
+                morir(true);
+            }
         }
     }
     public void Listener(OnViboritaComio listener){

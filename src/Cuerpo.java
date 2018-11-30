@@ -59,9 +59,26 @@ public class Cuerpo {
     public int X,Y;
     private Cuerpo sigcuerpo;
     private Juego juego;
-    public void Imagen(Graphics g, int gridWidth, int gridHeight,String... img){
+    public void Imagen(Graphics g, int gridWidth, int gridHeight,boolean isCabeza){
+        String img = "cuerpo.png";
+        if(isCabeza){
+            switch(this.dir){
+                case Juego.DIR_ARRIBA:
+                    img = "cabeza-arriba.png";
+                    break;
+                case Juego.DIR_ABAJO:
+                    img = "cabeza-abajo.png";
+                    break;
+                case Juego.DIR_IZQUIERDA:
+                    img = "cabeza-dere.png";
+                    break;
+                case Juego.DIR_DERECHA:
+                    img = "cabeza-izq.png";
+                    break;
+            }
+        }
 
-        ImageIcon Img = new ImageIcon(getClass().getResource(img.length==0?"cabeza.png":"cuerpo.png"));
+        ImageIcon Img = new ImageIcon(getClass().getResource(img));
         g.drawImage(Img.getImage(),
                 (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),
                 (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) ,

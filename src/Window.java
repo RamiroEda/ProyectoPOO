@@ -37,6 +37,7 @@ public class Window extends JFrame{
     private JList scoreList;
 
     public Window(Juego juego){
+        super("eSnakies");
         this.juego = juego;
         initWindow();
         initLayout();

@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+import javax.swing.*;
+
 public class main {
     public static void main(String[] args){
-        Juego juego = new Juego();
-        juego.start();
+        try{
+            Juego juego = new Juego();
+            juego.start();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
     }
 }

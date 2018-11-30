@@ -51,20 +51,15 @@ public class Juego extends JPanel
             KEY_D = 68;
 
     public static final int //Codigos estaticos de las direcciones
-            DIR_ARRIBA              = 0x01,
-            DIR_ABAJO               = 0x02,
-            DIR_DERECHA             = 0x03,
-            DIR_IZQUIERDA           = 0x04,
-            DIR_ABAJO_IZQUIERDA     = 0x05,
-            DIR_ABAJO_DERECHA       = 0x06,
-            DIR_ARRIBA_IZQUIERDA    = 0x07,
-            DIR_ARRIBA_DERECHA      = 0x08,
-            DIR_NULL                = 0x00;
-
-    private long lastFrameRateUpdate = 60;
-    private int frameRateCalls = 0;
-    private Double promedioFrameRate;
-    private DecimalFormat format;
+            DIR_ARRIBA              = 1,
+            DIR_ABAJO               = 2,
+            DIR_DERECHA             = 3,
+            DIR_IZQUIERDA           = 4,
+            DIR_ABAJO_IZQUIERDA     = 5, //Sin implementar
+            DIR_ABAJO_DERECHA       = 6, //Sin implementar
+            DIR_ARRIBA_IZQUIERDA    = 7, //Sin implementar
+            DIR_ARRIBA_DERECHA      = 8, //Sin implementar
+            DIR_NULL                = 0;
 
     private Window window; //La ventana que abre el juego
 
@@ -72,86 +67,33 @@ public class Juego extends JPanel
 
     private int lastDirection = KEY_DERECHA; //Aqui se guarda la ultima tecla presionada
 
-    private boolean isPlaying = false;
+    private boolean isPlaying = false; // Atributo para saber si esta el juego en Play
 
-    private Scoreboard score;
+    private Scoreboard score; // El scoreboard
 
-    private Viborita viborita;
+    private Viborita viborita; // Personaje del juego
 
-    private List<Manzanas> manzana;
+    private List<Manzanas> manzana; // Objetos del juego
 
-    private XboxController xboxController;
+    private XboxController xboxController; //Adaptadores del control de XBox
     private XboxControllerAdapter xboxControllerAdapter;
 
     Juego(){
         this.window = new Window(this);
         this.score= new Scoreboard(this);
-        this.format = new DecimalFormat("#.00");
-        this.promedioFrameRate = FRAME_RATE/1.0;
         this.manzana = new ArrayList<>();
         this.xboxController = new XboxController();
         this.xboxControllerAdapter = new XboxControllerDirecciones(this);
         this.xboxController.addXboxControllerListener(this.xboxControllerAdapter);
     }
 
-    public Window getWindow() {
-        return window;
-    }
-
-    public void stop(){ //Lo que se hace cuando el juego se PAUSA/DETIENE
-        isPlaying = false;
-        timer.stop();
-    }
-
-    public boolean isPlaying(){
-        return this.isPlaying;
-    }
+    // Metodos para controlar el tiempo en el juego
 
     public void start(){ //Se prepara el juego
         int delay = (1000/dificultad.getVelocidad());
         timer = new Timer(delay , this);
         restartViborita();
         resetManzana();
-    }
-
-    private boolean verificarViborita(){
-        Cuerpo cabeza = this.viborita.getcuerpo();
-        Cuerpo cuerpo = cabeza.SigCuerpo();
-        do{
-            if(cabeza.X == cuerpo.X && cabeza.Y==cuerpo.Y){
-                return false;
-            }
-            cuerpo = cuerpo.SigCuerpo();
-        }while(cuerpo != null);
-
-        return true;
-    }
-
-    private void restartViborita(){
-        viborita = new Viborita(this);
-        this.lastDirection = KEY_DERECHA;
-
-        viborita.Listener(new OnViboritaComio() {
-            @Override
-            public void ComioManzana(Manzanas manzana) {
-                score.SumarPuntos();
-                window.updateScore(score.puntaje);
-                comerManzana(manzana);
-                xboxController.vibrate(0x00FF, 0x00FF);
-            }
-        });
-    }
-
-    private void comerManzana(Manzanas manzana){
-        if(this.score.puntaje == this.dificultad.getFilas() * this.dificultad.getColumnas()){
-            JOptionPane.showMessageDialog(null, "Has ganado!");
-        }
-
-        manzana.setXY();
-
-        while(!manzana.verificar(this.viborita.getcuerpo())){
-            manzana.setXY();
-        }
     }
 
     public void resume(){
@@ -170,90 +112,31 @@ public class Juego extends JPanel
         isPlaying = true;
     }
 
+    public void stop(){ //Lo que se hace cuando el juego se PAUSA/DETIENE
+        isPlaying = false;
+        timer.stop();
+    }
+
+    public boolean isPlaying(){
+        return this.isPlaying;
+    }
+
+    private void frameUpdate(){
+        this.repaint();
+    }
+
+    // Getters
+
+    public Window getWindow() {
+        return window;
+    }
+
     public Scoreboard getScore() {
         return score;
     }
 
-    @Override
-    public void paint(Graphics g){ //Aqui se reflejan los cambios del juego ya que aqui se dibujan los elementos
-        super.paint(g);
-
-        this.setSize(window.getGameSize());
-
-        int width = getWidth();
-        int height = getHeight();
-
-        int gridWidth = width/dificultad.getColumnas();
-        int gridHeight = height/dificultad.getFilas();
-
-        g.setFont(new Font("Sans", Font.PLAIN, 20));
-        g.drawString("Velocidad: "+format.format(this.promedioFrameRate)+" u/s",0,20);
-
-        // TODO: Despues de aqui se dibujaran los elementos del juego
-        drawGrid(g, gridWidth, gridHeight);
-
-
-        for(Manzanas m : this.manzana){
-            m.Imagen(g, gridWidth, gridHeight);
-        }
-
-        Cuerpo cuerpo = this.viborita.getcuerpo();
-        cuerpo.Imagen(g, gridWidth, gridHeight, true); //
-        cuerpo = cuerpo.SigCuerpo(); //
-        do{
-            cuerpo.Imagen(g, gridWidth, gridHeight, false);
-            cuerpo = cuerpo.SigCuerpo();
-        }while(cuerpo != null);
-    }
-
-    private void drawGrid(Graphics g, int gridWidth, int gridHeight){
-        ImageIcon img = new ImageIcon(getClass().getResource("pastaso.jpg"));
-
-        int width = gridWidth*dificultad.getColumnas();
-        int height = gridHeight*dificultad.getFilas();
-
-        g.setColor(Color.black);
-        for(int i = 0; i <= dificultad.getFilas() ; ++i){
-            for(int e = 0 ; e <= dificultad.getColumnas() ; ++e){
-                g.drawImage(img.getImage(),
-                        gridWidth*e,
-                        gridHeight*i ,
-                        gridWidth,
-                        gridHeight,
-                        null);
-                g.drawLine(e*gridWidth, 0,
-                        e*gridWidth, height);
-            }
-            g.drawLine(0, i*gridHeight, width, i*gridHeight);
-        }
-        //g.setColor(Color.black);
-    }
-
     public Dificultad getDificultad() {
         return dificultad;
-    }
-
-    public void setDificultad(Dificultad dificultad) {
-        isPlaying = true;
-        this.dificultad = dificultad;
-        restart();
-        this.repaint();
-        isPlaying = false;
-    }
-
-    private void resetManzana(){
-        this.manzana.clear();
-
-        for(int i = 0 ; i < this.dificultad.getNumManzanas() ; i++){
-            Manzanas newManzana = new Manzanas(this);
-
-            while(!newManzana.verificar(this.viborita.getcuerpo())){
-                newManzana.setXY();
-            }
-
-            this.manzana.add(newManzana);
-        }
-
     }
 
     public List<Manzanas> getManzana() {
@@ -264,42 +147,28 @@ public class Juego extends JPanel
         return lastDirection;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
-        try{
-            this.viborita.mover(lastDirection);
-            Log.d("IS_RUNNING", isPlaying());
-            if(!this.verificarViborita()){
-                this.viborita.morir(isPlaying);
-            }
-            frameUpdate();
-        }catch (Exception error){
-            Log.e("ERROR_UPDATE", error.toString());
+    private int getDireccion(int dir){
+        if(dir == KEY_ARRIBA || dir == KEY_W){
+            return DIR_ARRIBA;
+        }else if(dir == KEY_ABAJO || dir == KEY_S){
+            return DIR_ABAJO;
+        }else if(dir == KEY_DERECHA || dir == KEY_D){
+            return DIR_DERECHA;
+        }else if(dir == KEY_IZQUIERDA || dir == KEY_A){
+            return DIR_IZQUIERDA;
         }
+
+        return DIR_NULL;
     }
 
-    private void frameUpdate(){
-        this.frameRateCalls++;
+    // Setters
 
-        if(System.currentTimeMillis() - this.lastFrameRateUpdate > 1000){
-            this.lastFrameRateUpdate = System.currentTimeMillis();
-            this.promedioFrameRate = (this.promedioFrameRate + this.frameRateCalls)/2.0;
-            this.frameRateCalls = 0;
-        }
-
+    public void setDificultad(Dificultad dificultad) {
+        isPlaying = true;
+        this.dificultad = dificultad;
+        restart();
         this.repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO AAAUUUUN*/ }
-
-    @Override
-    public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas
-        Log.i("KEY_PRESS", e.getExtendedKeyCode());
-
-        int keyCode = getDireccion(e.getExtendedKeyCode());
-
-        setLastDirection(keyCode, "TECLADO");
+        isPlaying = false;
     }
 
     public void setLastDirection(int lastDirection, String origen) {
@@ -341,23 +210,146 @@ public class Juego extends JPanel
         }
     }
 
-    private int getDireccion(int dir){
-        if(dir == KEY_ARRIBA || dir == KEY_W){
-            return DIR_ARRIBA;
-        }else if(dir == KEY_ABAJO || dir == KEY_S){
-            return DIR_ABAJO;
-        }else if(dir == KEY_DERECHA || dir == KEY_D){
-            return DIR_DERECHA;
-        }else if(dir == KEY_IZQUIERDA || dir == KEY_A){
-            return DIR_IZQUIERDA;
+    // Metodos de los objetos dentro del juego
+
+    private boolean verificarViborita(){
+        Cuerpo cabeza = this.viborita.getcuerpo();
+        Cuerpo cuerpo = cabeza.SigCuerpo();
+        do{
+            if(cabeza.X == cuerpo.X && cabeza.Y==cuerpo.Y){
+                return false;
+            }
+            cuerpo = cuerpo.SigCuerpo();
+        }while(cuerpo != null);
+
+        return true;
+    }
+
+    private void restartViborita(){
+        viborita = new Viborita(this);
+        this.lastDirection = KEY_DERECHA;
+
+        viborita.Listener(new OnViboritaComio() {
+            @Override
+            public void ComioManzana(Manzanas manzana) {
+                score.SumarPuntos();
+                window.updateScore(score.puntaje);
+                comerManzana(manzana);
+                xboxController.vibrate(0x00FF, 0x00FF);
+            }
+        });
+    }
+
+    private void comerManzana(Manzanas manzana){
+        if(this.score.puntaje == this.dificultad.getFilas() * this.dificultad.getColumnas()){
+            JOptionPane.showMessageDialog(null, "Has ganado!");
         }
 
-        return DIR_NULL;
+        manzana.setXY();
+
+        while(!manzana.verificar(this.viborita.getcuerpo())){
+            manzana.setXY();
+        }
+    }
+
+    private void resetManzana(){
+        this.manzana.clear();
+
+        for(int i = 0 ; i < this.dificultad.getNumManzanas() ; i++){
+            Manzanas newManzana = new Manzanas(this);
+
+            while(!newManzana.verificar(this.viborita.getcuerpo())){
+                newManzana.setXY();
+            }
+
+            this.manzana.add(newManzana);
+        }
+
+    }
+
+    // Metodos heredados de JPanel y metodos usados por el mismo
+
+    @Override
+    public void paint(Graphics g){ //Aqui se reflejan los cambios del juego ya que aqui se dibujan los elementos
+        super.paint(g);
+
+        this.setSize(window.getGameSize());
+
+        int width = getWidth();
+        int height = getHeight();
+
+        int gridWidth = width/dificultad.getColumnas();
+        int gridHeight = height/dificultad.getFilas();
+
+        // TODO: Despues de aqui se dibujaran los elementos del juego
+        drawGrid(g, gridWidth, gridHeight);
+
+
+        for(Manzanas m : this.manzana){
+            m.Imagen(g, gridWidth, gridHeight);
+        }
+
+        Cuerpo cuerpo = this.viborita.getcuerpo();
+        cuerpo.Imagen(g, gridWidth, gridHeight, true); //
+        cuerpo = cuerpo.SigCuerpo(); //
+        do{
+            cuerpo.Imagen(g, gridWidth, gridHeight, false);
+            cuerpo = cuerpo.SigCuerpo();
+        }while(cuerpo != null);
+    }
+
+    private void drawGrid(Graphics g, int gridWidth, int gridHeight){
+        ImageIcon img = new ImageIcon(getClass().getResource("pastaso.jpg"));
+
+        int width = gridWidth*dificultad.getColumnas();
+        int height = gridHeight*dificultad.getFilas();
+
+        g.setColor(Color.black);
+        for(int i = 0; i <= dificultad.getFilas() ; ++i){
+            for(int e = 0 ; e <= dificultad.getColumnas() ; ++e){
+                g.drawImage(img.getImage(),
+                        gridWidth*e,
+                        gridHeight*i ,
+                        gridWidth,
+                        gridHeight,
+                        null);
+                g.drawLine(e*gridWidth, 0,
+                        e*gridWidth, height);
+            }
+            g.drawLine(0, i*gridHeight, width, i*gridHeight);
+        }
+        //g.setColor(Color.black);
+    }
+
+    // Metodos heredados de las interfaces
+
+    @Override
+    public void actionPerformed(ActionEvent e) { // Aqui se incluiran las acciones; Una llamada a este metodo equivale a un frame
+        try{
+            this.viborita.mover(lastDirection);
+            Log.d("IS_RUNNING", isPlaying());
+            if(!this.verificarViborita()){
+                this.viborita.morir(isPlaying);
+            }
+            frameUpdate();
+        }catch (Exception error){
+            Log.e("ERROR_UPDATE", error.toString());
+        }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyTyped(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO*/ }
 
+    @Override
+    public void keyPressed(KeyEvent e) { // Se obtienen las teclas presionadas
+        Log.i("KEY_PRESS", e.getExtendedKeyCode());
+
+        int keyCode = getDireccion(e.getExtendedKeyCode());
+
+        setLastDirection(keyCode, "TECLADO");
     }
+
+    @Override
+    public void keyReleased(KeyEvent e) { /* NO FUNCIONA PARA ESTE PROYECTO*/ }
 
 }

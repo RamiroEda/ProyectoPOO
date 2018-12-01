@@ -30,7 +30,7 @@ public class Manzanas {
 
     public void Imagen(Graphics g, int gridWidth, int gridHeight){
 
-        ImageIcon Img = new ImageIcon(getClass().getResource("manzanota.png"));
+        ImageIcon Img = new ImageIcon(getClass().getResource("Assets/manzanota.png"));
         g.drawImage(Img.getImage(),
                 (((juego.getWidth())/(juego.getDificultad().getColumnas()))*X),
                 (((juego.getHeight())/(juego.getDificultad().getFilas()))*Y) ,

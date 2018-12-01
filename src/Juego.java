@@ -1,14 +1,13 @@
 
 
-import ch.aplu.xboxcontroller.XboxController;
-import ch.aplu.xboxcontroller.XboxControllerAdapter;
+//import ch.aplu.xboxcontroller.XboxController;
+//import ch.aplu.xboxcontroller.XboxControllerAdapter;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -75,16 +74,16 @@ public class Juego extends JPanel
 
     private List<Manzanas> manzana; // Objetos del juego
 
-    private XboxController xboxController; //Adaptadores del control de XBox
-    private XboxControllerAdapter xboxControllerAdapter;
+    //private XboxController xboxController; //Adaptadores del control de XBox
+    //private XboxControllerAdapter xboxControllerAdapter;
 
     Juego(){
         this.window = new Window(this);
         this.score= new Scoreboard(this);
         this.manzana = new ArrayList<>();
-        this.xboxController = new XboxController();
-        this.xboxControllerAdapter = new XboxControllerDirecciones(this);
-        this.xboxController.addXboxControllerListener(this.xboxControllerAdapter);
+        //this.xboxController = new XboxController();
+        //this.xboxControllerAdapter = new XboxControllerDirecciones(this);
+        //this.xboxController.addXboxControllerListener(this.xboxControllerAdapter);
     }
 
     // Metodos para controlar el tiempo en el juego
@@ -235,7 +234,7 @@ public class Juego extends JPanel
                 score.SumarPuntos();
                 window.updateScore(score.puntaje);
                 comerManzana(manzana);
-                xboxController.vibrate(0x00FF, 0x00FF);
+                //xboxController.vibrate(0x00FF, 0x00FF);
             }
         });
     }
@@ -299,7 +298,7 @@ public class Juego extends JPanel
     }
 
     private void drawGrid(Graphics g, int gridWidth, int gridHeight){
-        ImageIcon img = new ImageIcon(getClass().getResource("pastaso.jpg"));
+        ImageIcon img = new ImageIcon(getClass().getResource("Assets/pastaso.jpg"));
 
         int width = gridWidth*dificultad.getColumnas();
         int height = gridHeight*dificultad.getFilas();

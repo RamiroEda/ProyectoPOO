@@ -60,20 +60,20 @@ public class Cuerpo {
     private Cuerpo sigcuerpo;
     private Juego juego;
     public void Imagen(Graphics g, int gridWidth, int gridHeight,boolean isCabeza){
-        String img = "cuerpo.png";
+        String img = "Assets/cuerpo.png";
         if(isCabeza){
             switch(this.dir){
                 case Juego.DIR_ARRIBA:
-                    img = "cabeza-arriba.png";
+                    img = "Assets/cabeza-arriba.png";
                     break;
                 case Juego.DIR_ABAJO:
-                    img = "cabeza-abajo.png";
+                    img = "Assets/cabeza-abajo.png";
                     break;
                 case Juego.DIR_IZQUIERDA:
-                    img = "cabeza-dere.png";
+                    img = "Assets/cabeza-dere.png";
                     break;
                 case Juego.DIR_DERECHA:
-                    img = "cabeza-izq.png";
+                    img = "Assets/cabeza-izq.png";
                     break;
             }
         }

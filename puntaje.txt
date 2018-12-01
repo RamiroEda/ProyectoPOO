@@ -1,10 +1,10 @@
 Ramiro|51
 Ramiro|28
 null|24
+Hola|23
 ram|16
 Ramiro|14
 null|13
 Holis|12
 asd|12
 null|12
-null|9
